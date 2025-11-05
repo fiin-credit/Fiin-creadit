@@ -1,0 +1,41 @@
+{
+  "articles": [
+    {
+      "title": "5 Lý Do Nên Chọn Fiin Credit Cho Khoản Vay Của Bạn",
+      "description": "Khám phá những ưu điểm vượt trội của Fiin Credit: thủ tục đơn giản, lãi suất cạnh tranh, phê duyệt nhanh chóng và dịch vụ hỗ trợ 24/7.",
+      "image": "assets/images/post1.jpg",
+      "link": "#"
+    },
+    {
+      "title": "Hướng Dẫn Đăng Ký Vay Online Trong 5 Phút",
+      "description": "Quy trình đăng ký vay trực tuyến tại Fiin Credit cực kỳ đơn giản. Chỉ cần 5 phút để hoàn tất thủ tục và nhận phê duyệt ngay trong ngày.",
+      "image": "assets/images/post2.jpg",
+      "link": "#"
+    },
+    {
+      "title": "Cách Tính Lãi Suất Vay Tại Fiin Credit",
+      "description": "Tìm hiểu cách tính lãi suất minh bạch và công khai tại Fiin Credit. Chúng tôi cam kết không có phí ẩn, không có chi phí phát sinh.",
+      "image": "assets/images/post3.jpg",
+      "link": "#"
+    },
+    {
+      "title": "Bảo Mật Thông Tin Khách Hàng - Ưu Tiên Hàng Đầu",
+      "description": "Fiin Credit sử dụng công nghệ mã hóa tiên tiến để bảo vệ thông tin cá nhân của khách hàng. An toàn và bảo mật là cam kết của chúng tôi.",
+      "image": "assets/images/post4.jpg",
+      "link": "#"
+    },
+    {
+      "title": "Câu Chuyện Thành Công: Từ Khởi Nghiệp Đến Thành Công",
+      "description": "Chia sẻ từ khách hàng đã sử dụng dịch vụ vay của Fiin Credit để khởi nghiệp và đạt được thành công trong kinh doanh.",
+      "image": "assets/images/post5.jpg",
+      "link": "#"
+    },
+    {
+      "title": "Fiin Credit Đạt Giải Thưởng Công Ty Tài Chính Tốt Nhất 2024",
+      "description": "Vinh dự nhận giải thưởng công ty tài chính tốt nhất năm 2024, khẳng định vị thế và uy tín của Fiin Credit trong ngành tài chính Việt Nam.",
+      "image": "assets/images/post6.jpg",
+      "link": "#"
+    }
+  ]
+}
+

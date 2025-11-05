@@ -1,0 +1,20 @@
+{
+  "sliders": [
+    {
+      "title": "Giải Pháp Tài Chính Thông Minh",
+      "description": "Fiin Credit mang đến những giải pháp tài chính hiện đại, phù hợp với mọi nhu cầu của bạn",
+      "image": "assets/images/slider1.jpg"
+    },
+    {
+      "title": "Uy Tín - Nhanh Chóng - Tiện Lợi",
+      "description": "Thủ tục đơn giản, phê duyệt nhanh chóng, hỗ trợ 24/7",
+      "image": "assets/images/slider2.jpg"
+    },
+    {
+      "title": "Đồng Hành Cùng Bạn",
+      "description": "Hơn 100.000 khách hàng tin tưởng và lựa chọn Fiin Credit",
+      "image": "assets/images/slider3.jpg"
+    }
+  ]
+}
+
