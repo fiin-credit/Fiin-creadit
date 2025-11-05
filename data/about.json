@@ -1,0 +1,45 @@
+{
+  "pageTitle": "Về Chúng Tôi",
+  "intro": "Fiin Credit là công ty tài chính hàng đầu tại Việt Nam, chuyên cung cấp các giải pháp tài chính hiện đại, uy tín và phù hợp với mọi nhu cầu của khách hàng.",
+  "sections": [
+    {
+      "icon": "🎯",
+      "title": "Sứ Mệnh",
+      "content": "Mang đến giải pháp tài chính thông minh, giúp mọi người dễ dàng tiếp cận các dịch vụ tài chính một cách minh bạch, nhanh chóng và tiện lợi."
+    },
+    {
+      "icon": "👁️",
+      "title": "Tầm Nhìn",
+      "content": "Trở thành công ty tài chính số hàng đầu tại Việt Nam, được khách hàng tin tưởng và lựa chọn hàng đầu trong lĩnh vực tài chính cá nhân."
+    },
+    {
+      "icon": "💎",
+      "title": "Giá Trị Cốt Lõi",
+      "content": "Uy tín, minh bạch, đổi mới và đặt khách hàng làm trung tâm. Chúng tôi cam kết mang đến trải nghiệm tốt nhất cho mọi khách hàng."
+    },
+    {
+      "icon": "💎",
+      "title": "Giá Trị Cốt Lõi",
+      "content": "Uy tín, minh bạch, đổi mới và đặt khách hàng làm trung tâm. Chúng tôi cam kết mang đến trải nghiệm tốt nhất cho mọi khách hàng."
+    }
+  ],
+  "stats": [
+    {
+      "number": 100000,
+      "label": "Khách Hàng"
+    },
+    {
+      "number": 5000,
+      "label": "Tỷ VNĐ Cho Vay"
+    },
+    {
+      "number": 98,
+      "label": "% Hài Lòng"
+    },
+    {
+      "number": 24,
+      "label": "Giờ Hỗ Trợ"
+    }
+  ]
+}
+

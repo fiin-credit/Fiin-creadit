@@ -1,0 +1,67 @@
+{
+  "pageTitle": "Liên Hệ Với Chúng Tôi",
+  "intro": "Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với chúng tôi qua các kênh sau:",
+  "contactInfo": [
+    {
+      "icon": "📧",
+      "title": "Email",
+      "items": [
+        "contact@fiincredit.com",
+        "support@fiincredit.com"
+      ]
+    },
+    {
+      "icon": "📞",
+      "title": "Hotline",
+      "items": [
+        "1900-xxxx",
+        "Hỗ trợ 24/7"
+      ]
+    },
+    {
+      "icon": "📍",
+      "title": "Địa Chỉ",
+      "items": [
+        "Số 123, Đường ABC",
+        "Quận XYZ, Hà Nội, Việt Nam"
+      ]
+    },
+    {
+      "icon": "⏰",
+      "title": "Giờ Làm Việc",
+      "items": [
+        "Thứ 2 - Thứ 6: 8:00 - 18:00",
+        "Thứ 7: 8:00 - 12:00"
+      ]
+    }
+  ],
+  "formTitle": "Gửi Tin Nhắn",
+  "formFields": [
+    {
+      "name": "name",
+      "label": "Họ và Tên",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "email",
+      "label": "Email",
+      "type": "email",
+      "required": true
+    },
+    {
+      "name": "phone",
+      "label": "Số Điện Thoại",
+      "type": "tel",
+      "required": false
+    },
+    {
+      "name": "message",
+      "label": "Nội Dung",
+      "type": "textarea",
+      "required": true
+    }
+  ],
+  "submitButton": "Gửi Tin Nhắn"
+}
+
