@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Bài Viết - Fiin Credit</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Login Styles */
+        .login-container {
+            max-width: 400px;
+            margin: 150px auto;
+            padding: var(--spacing-lg);
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .login-header h1 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        .login-form input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+        }
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .btn-login {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-sm);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+        .btn-login:hover {
+            background: var(--primary-dark);
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+        .hidden {
+            display: none;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: var(--spacing-md);
+        }
+        .admin-header {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        .admin-header h1 {
+            margin: 0;
+            color: white;
+        }
+        .articles-list {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        .article-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .article-item:hover {
+            background: var(--bg-light);
+        }
+        .article-info h3 {
+            margin: 0 0 var(--spacing-xs) 0;
+            color: var(--primary-color);
+        }
+        .article-info p {
+            margin: 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        .article-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+        .btn-edit {
+            background: var(--primary-color);
+            color: white;
+        }
+        .btn-edit:hover {
+            background: var(--primary-dark);
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        .btn-add {
+            background: var(--secondary-color);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        .btn-add:hover {
+            background: var(--primary-color);
+        }
+        .form-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .form-group textarea.content {
+            min-height: 300px;
+        }
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+        .btn-save:hover {
+            background: #218838;
+        }
+        .btn-cancel {
+            background: var(--text-gray);
+            color: white;
+        }
+        .btn-cancel:hover {
+            background: #555;
+        }
+        .btn-download {
+            background: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        .hidden {
+            display: none;
+        }
+        .alert {
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-header">
+            <h1>🔐 Đăng Nhập Admin</h1>
+            <p>Quản lý bài viết</p>
+        </div>
+        <div id="loginAlert"></div>
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Tên Đăng Nhập</label>
+                <input type="text" id="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Mật Khẩu</label>
+                <input type="password" id="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-login">Đăng Nhập</button>
+        </form>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="admin-container hidden" id="adminContainer">
+        <div class="admin-header">
+            <h1>📝 Quản Lý Bài Viết</h1>
+            <p>Thêm, sửa, xóa bài viết dễ dàng</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="articles-list">
+            <button class="btn btn-add" onclick="showAddForm()">+ Thêm Bài Viết Mới</button>
+            <div id="articlesList">
+                <!-- Articles will be loaded here -->
+            </div>
+        </div>
+
+        <div class="form-container hidden" id="articleForm">
+            <h2 id="formTitle">Thêm Bài Viết Mới</h2>
+            <form id="articleFormElement" onsubmit="saveArticle(event)">
+                <input type="hidden" id="articleIndex" value="-1">
+                
+                <div class="form-group">
+                    <label for="title">Tiêu Đề *</label>
+                    <input type="text" id="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Mô Tả Ngắn *</label>
+                    <textarea id="description" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Nội Dung Đầy Đủ *</label>
+                    <textarea id="content" class="content" required></textarea>
+                    <small style="color: var(--text-gray);">Nội dung sẽ hiển thị khi click vào bài viết</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Đường Dẫn Ảnh</label>
+                    <input type="text" id="image" placeholder="assets/images/post1.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label for="link">Link (tùy chọn)</label>
+                    <input type="text" id="link" placeholder="#">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save">💾 Lưu</button>
+                    <button type="button" class="btn btn-cancel" onclick="cancelForm()">❌ Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <button class="btn btn-download" onclick="downloadJSON()">📥 Tải File JSON Đã Cập Nhật</button>
+        <button class="btn btn-download" onclick="logout()" style="background: #dc3545; margin-top: var(--spacing-sm);">🚪 Đăng Xuất</button>
+    </div>
+
+    <script>
+        // Login credentials (in production, use secure authentication)
+        const ADMIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'fiin2025'
+        };
+
+        // Check if user is logged in
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+            if (isLoggedIn) {
+                showAdminPanel();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showAdminPanel();
+                showLoginAlert('Đăng nhập thành công!', 'success');
+            } else {
+                showLoginAlert('Tên đăng nhập hoặc mật khẩu không đúng!', 'error');
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                showLogin();
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Show login form
+        function showLogin() {
+            document.getElementById('loginContainer').classList.remove('hidden');
+            document.getElementById('adminContainer').classList.add('hidden');
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('adminContainer').classList.remove('hidden');
+            loadArticles();
+        }
+
+        // Show login alert
+        function showLoginAlert(message, type) {
+            const container = document.getElementById('loginAlert');
+            const alert = document.createElement('div');
+            alert.className = type === 'error' ? 'alert-error' : 'alert-success';
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        let articles = [];
+        let editingIndex = -1;
+
+        // Load articles from JSON
+        async function loadArticles() {
+            try {
+                const response = await fetch('data/articles.json');
+                const data = await response.json();
+                articles = data.articles || [];
+                renderArticles();
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                showAlert('Không thể tải danh sách bài viết', 'error');
+            }
+        }
+
+        // Render articles list
+        function renderArticles() {
+            const container = document.getElementById('articlesList');
+            if (articles.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-gray);">Chưa có bài viết nào. Hãy thêm bài viết mới!</p>';
+                return;
+            }
+
+            container.innerHTML = articles.map((article, index) => {
+                return `
+                    <div class="article-item">
+                        <div class="article-info">
+                            <h3>${escapeHtml(article.title || 'Không có tiêu đề')}</h3>
+                            <p>${escapeHtml((article.description || '').substring(0, 100))}...</p>
+                        </div>
+                        <div class="article-actions">
+                            <button class="btn btn-edit" onclick="editArticle(${index})">✏️ Sửa</button>
+                            <button class="btn btn-delete" onclick="deleteArticle(${index})">🗑️ Xóa</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show add form
+        function showAddForm() {
+            editingIndex = -1;
+            document.getElementById('formTitle').textContent = 'Thêm Bài Viết Mới';
+            document.getElementById('articleFormElement').reset();
+            document.getElementById('articleIndex').value = '-1';
+            document.getElementById('articleForm').classList.remove('hidden');
+            document.getElementById('articleForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Edit article
+        function editArticle(index) {
+            editingIndex = index;
+            const article = articles[index];
+            document.getElementById('formTitle').textContent = 'Sửa Bài Viết';
+            document.getElementById('articleIndex').value = index;
+            document.getElementById('title').value = article.title || '';
+            document.getElementById('description').value = article.description || '';
+            document.getElementById('content').value = article.content || '';
+            document.getElementById('image').value = article.image || '';
+            document.getElementById('link').value = article.link || '#';
+            document.getElementById('articleForm').classList.remove('hidden');
+            document.getElementById('articleForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Save article
+        function saveArticle(event) {
+            event.preventDefault();
+            
+            const index = parseInt(document.getElementById('articleIndex').value);
+            const article = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                content: document.getElementById('content').value,
+                image: document.getElementById('image').value || 'assets/images/post1.jpg',
+                link: document.getElementById('link').value || '#'
+            };
+
+            if (index === -1) {
+                // Add new
+                articles.push(article);
+                showAlert('Đã thêm bài viết mới thành công!', 'success');
+            } else {
+                // Update existing
+                articles[index] = article;
+                showAlert('Đã cập nhật bài viết thành công!', 'success');
+            }
+
+            renderArticles();
+            cancelForm();
+        }
+
+        // Delete article
+        function deleteArticle(index) {
+            if (confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+                articles.splice(index, 1);
+                renderArticles();
+                showAlert('Đã xóa bài viết thành công!', 'success');
+            }
+        }
+
+        // Cancel form
+        function cancelForm() {
+            document.getElementById('articleForm').classList.add('hidden');
+            document.getElementById('articleFormElement').reset();
+            editingIndex = -1;
+        }
+
+        // Download JSON
+        function downloadJSON() {
+            const data = {
+                articles: articles
+            };
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'articles.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showAlert('Đã tải file JSON thành công! Hãy thay thế file data/articles.json', 'success');
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type === 'success' ? 'success' : 'error'}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>
+

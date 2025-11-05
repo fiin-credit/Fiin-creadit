@@ -49,6 +49,32 @@ webtinh/
 1. Clone hoặc tải dự án về máy
 2. Mở file `index.html` bằng trình duyệt web
 
+### 2. Quản Lý Bài Viết (Admin)
+
+Thay vì chỉnh sửa trực tiếp file JSON, bạn có thể sử dụng trang quản lý:
+
+1. **Chạy local server** (bắt buộc):
+   ```bash
+   # Python
+   python -m http.server 8000
+   
+   # Node.js
+   npx http-server
+   ```
+
+2. **Truy cập admin**: Mở `http://localhost:8000/admin.html`
+
+3. **Đăng nhập**:
+   - Username: `admin`
+   - Password: `fiin2025`
+
+4. **Quản lý bài viết**:
+   - Thêm, sửa, xóa bài viết
+   - Click **"Tải File JSON Đã Cập Nhật"**
+   - Thay thế file `data/articles.json` bằng file vừa tải về
+
+📖 **Chi tiết**: Xem file `ADMIN_GUIDE.md` để biết cách hoạt động chi tiết của trang admin.
+
 ### 2. Thêm Hình Ảnh
 
 Thêm các hình ảnh vào thư mục `assets/images/`:
