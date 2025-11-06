@@ -636,54 +636,344 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .page-section {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .articles-section {
+        padding: var(--spacing-lg) 0;
+    }
+    
     .page-title {
         font-size: 2rem;
+        margin-bottom: var(--spacing-md);
     }
     
     .section-title {
         font-size: 1.5rem;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .lead-text {
+        font-size: 1rem;
+        padding: 0 var(--spacing-sm);
     }
     
     .articles-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-md);
+    }
+    
+    .article-card {
+        margin-bottom: var(--spacing-sm);
     }
     
     .article-card.featured {
         grid-template-columns: 1fr;
+        margin-bottom: var(--spacing-sm);
     }
     
     .article-card.featured .article-card-image {
         min-height: 250px;
     }
     
+    .article-card.featured .article-card-content {
+        padding: var(--spacing-md);
+    }
+    
     .article-card.featured .article-card-title {
         font-size: 1.5rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .article-card.featured .article-card-description {
+        font-size: 1rem;
+    }
+    
+    .article-card-content {
+        padding: var(--spacing-sm);
+    }
+    
+    .article-card-title {
+        font-size: 1.125rem;
+    }
+    
+    .article-modal-content {
+        max-width: 95%;
+        margin: var(--spacing-sm);
+        max-height: 95vh;
+    }
+    
+    .article-modal-header {
+        padding: var(--spacing-sm);
+    }
+    
+    .article-modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .article-modal-close {
+        width: 36px;
+        height: 36px;
+        font-size: 1.5rem;
+    }
+    
+    .article-modal-body {
+        padding: var(--spacing-sm);
+    }
+    
+    .article-modal-image {
+        max-height: 250px;
+    }
+    
+    .article-modal-text {
+        font-size: 0.95rem;
+        line-height: 1.7;
     }
     
     .contact-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+    }
+    
+    .contact-form-wrapper,
+    .contact-card {
+        padding: var(--spacing-sm);
     }
     
     .about-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .about-card {
+        padding: var(--spacing-sm);
+    }
+    
+    .about-card-title {
+        font-size: 1.25rem;
     }
     
     .about-stats {
         grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+        margin-top: var(--spacing-md);
     }
     
     .stat-number {
         font-size: 2rem;
     }
+    
+    .stat-label {
+        font-size: 0.9rem;
+    }
+    
+    .footer {
+        padding: var(--spacing-lg) 0 var(--spacing-sm);
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .footer-title {
+        font-size: 1.25rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 0.625rem;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    .btn-submit {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 var(--spacing-xs);
+    }
+    
+    .page-section {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .articles-section {
+        padding: var(--spacing-md) 0;
+    }
+    
     .page-title {
         font-size: 1.75rem;
+        margin-bottom: var(--spacing-sm);
+        padding: 0 var(--spacing-xs);
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        margin-bottom: var(--spacing-sm);
+        padding: 0 var(--spacing-xs);
+    }
+    
+    .lead-text {
+        font-size: 0.95rem;
+        padding: 0 var(--spacing-xs);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .articles-grid {
+        gap: var(--spacing-xs);
+        margin-top: var(--spacing-sm);
+    }
+    
+    .article-card.featured .article-card-image {
+        min-height: 200px;
+    }
+    
+    .article-card.featured .article-card-content {
+        padding: var(--spacing-sm);
+    }
+    
+    .article-card.featured .article-card-title {
+        font-size: 1.25rem;
+    }
+    
+    .article-card.featured .article-card-description {
+        font-size: 0.95rem;
+    }
+    
+    .article-card-image {
+        height: 180px;
+    }
+    
+    .article-card-content {
+        padding: var(--spacing-xs);
+    }
+    
+    .article-card-title {
+        font-size: 1rem;
+    }
+    
+    .article-modal-content {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+    }
+    
+    .article-modal-header {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .article-modal-title {
+        font-size: 1.125rem;
+    }
+    
+    .article-modal-close {
+        width: 32px;
+        height: 32px;
+        font-size: 1.25rem;
+    }
+    
+    .article-modal-body {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .article-modal-image {
+        max-height: 200px;
+    }
+    
+    .article-modal-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .contact-grid {
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+    }
+    
+    .contact-form-wrapper,
+    .contact-card {
+        padding: var(--spacing-xs);
+    }
+    
+    .contact-card-title {
+        font-size: 1.125rem;
+    }
+    
+    .form-title {
+        font-size: 1.25rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .about-card {
+        padding: var(--spacing-xs);
+    }
+    
+    .about-icon {
+        font-size: 2.5rem;
+    }
+    
+    .about-card-title {
+        font-size: 1.125rem;
     }
     
     .about-stats {
         grid-template-columns: 1fr;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-sm);
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+    }
+    
+    .footer {
+        padding: var(--spacing-md) 0 var(--spacing-xs);
+    }
+    
+    .footer-content {
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .footer-title {
+        font-size: 1.125rem;
+    }
+    
+    .footer-heading {
+        font-size: 1rem;
+    }
+    
+    .footer-description,
+    .footer-links a,
+    .footer-section p {
+        font-size: 0.9rem;
+    }
+    
+    .footer-bottom {
+        padding-top: var(--spacing-sm);
+        font-size: 0.85rem;
     }
 }
 
