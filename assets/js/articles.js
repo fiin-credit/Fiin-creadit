@@ -61,7 +61,8 @@ class ArticlesLoader {
         const description = article.description || '';
         const isFeatured = index === 0; // First card is featured
         const featuredClass = isFeatured ? 'featured' : '';
-        const descriptionHtml = isFeatured && description ? `<p class="article-card-description">${this.escapeHtml(description)}</p>` : '';
+        // Parse links in description to make them clickable
+        const descriptionHtml = isFeatured && description ? `<p class="article-card-description">${this.parseLinks(description)}</p>` : '';
         
         return `
             <article class="article-card ${featuredClass}" data-index="${index}" style="animation-delay: ${index * 0.1}s">
@@ -165,6 +166,7 @@ class ArticlesLoader {
         const titleEl = modal.querySelector('.article-modal-title');
         const imageEl = modal.querySelector('.article-modal-image');
         const textEl = modal.querySelector('.article-modal-text');
+        const bodyEl = modal.querySelector('.article-modal-body');
         
         titleEl.textContent = article.title || 'Không có tiêu đề';
         imageEl.src = article.image || '';
@@ -172,7 +174,25 @@ class ArticlesLoader {
         
         // Use content if available, otherwise use description
         const content = article.content || article.description || 'Không có nội dung';
-        textEl.textContent = content;
+        // Parse and convert links to clickable format
+        textEl.innerHTML = this.parseLinks(content);
+        
+        // Add link button if article has a valid link
+        let linkButton = bodyEl.querySelector('.article-modal-link');
+        if (article.link && article.link !== '#' && article.link !== '') {
+            if (!linkButton) {
+                linkButton = document.createElement('a');
+                linkButton.className = 'article-modal-link';
+                linkButton.target = '_blank';
+                linkButton.rel = 'noopener noreferrer';
+                bodyEl.appendChild(linkButton);
+            }
+            linkButton.href = article.link;
+            linkButton.textContent = '🔗 Xem thêm';
+            linkButton.style.display = 'inline-block';
+        } else if (linkButton) {
+            linkButton.style.display = 'none';
+        }
         
         // Hide image if no image URL
         if (!article.image) {
@@ -183,6 +203,84 @@ class ArticlesLoader {
         
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+    }
+    
+    parseLinks(text) {
+        if (!text) return '';
+        
+        // Define link types with their icons/labels
+        const linkTypes = {
+            'youtobe': { icon: '📺', label: 'Xem video trên YouTube' },
+            'youtube': { icon: '📺', label: 'Xem video trên YouTube' },
+            'facebook': { icon: '📘', label: 'Xem trên Facebook' },
+            'fb': { icon: '📘', label: 'Xem trên Facebook' },
+            'bao': { icon: '📰', label: 'Đọc bài báo' },
+            'news': { icon: '📰', label: 'Đọc bài báo' },
+            'tin': { icon: '📰', label: 'Đọc tin tức' },
+            'link': { icon: '🔗', label: 'Xem thêm' },
+            'web': { icon: '🌐', label: 'Truy cập website' },
+            'doc': { icon: '📄', label: 'Xem tài liệu' },
+            'file': { icon: '📎', label: 'Tải file' }
+        };
+        
+        // Use placeholder to protect URLs before escaping HTML
+        const placeholderPrefix = '___URL_PLACEHOLDER_';
+        const urlPlaceholders = [];
+        let placeholderIndex = 0;
+        
+        // First, find and replace URLs with placeholders (before escaping)
+        // This prevents URLs from being escaped
+        let textWithPlaceholders = text;
+        
+        // Find keyword URLs (format: keyword URL or @keyword @URL)
+        // Check each link type
+        Object.keys(linkTypes).forEach(keyword => {
+            const regex = new RegExp(`(@?)${keyword}\\s+(@?)(https?:\\/\\/[^\\s]+)`, 'gi');
+            textWithPlaceholders = textWithPlaceholders.replace(regex, (match, at1, at2, url) => {
+                const placeholder = placeholderPrefix + placeholderIndex;
+                urlPlaceholders.push({ placeholder, url, type: keyword });
+                placeholderIndex++;
+                return placeholder;
+            });
+        });
+        
+        // Find @URL patterns (generic @ before URL)
+        textWithPlaceholders = textWithPlaceholders.replace(/@(https?:\/\/[^\s]+)/gi, (match, url) => {
+            const placeholder = placeholderPrefix + placeholderIndex;
+            urlPlaceholders.push({ placeholder, url, type: 'at' });
+            placeholderIndex++;
+            return placeholder;
+        });
+        
+        // Find plain URLs (last, to avoid matching already processed URLs)
+        textWithPlaceholders = textWithPlaceholders.replace(/(https?:\/\/[^\s]+)/gi, (match, url) => {
+            const placeholder = placeholderPrefix + placeholderIndex;
+            urlPlaceholders.push({ placeholder, url, type: 'plain' });
+            placeholderIndex++;
+            return placeholder;
+        });
+        
+        // Now escape HTML (URLs are protected by placeholders)
+        let html = this.escapeHtml(textWithPlaceholders);
+        
+        // Convert line breaks
+        html = html.replace(/\n/g, '<br>');
+        
+        // Replace placeholders with actual link HTML
+        urlPlaceholders.forEach(({ placeholder, url, type }) => {
+            let linkHtml;
+            if (linkTypes[type]) {
+                const linkInfo = linkTypes[type];
+                linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="article-link">${linkInfo.icon} ${linkInfo.label}</a>`;
+            } else if (type === 'at') {
+                linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="article-link">🔗 ${url}</a>`;
+            } else {
+                linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="article-link">${url}</a>`;
+            }
+            html = html.replace(placeholder, linkHtml);
+        });
+        
+        return html;
     }
     
     closeModal() {

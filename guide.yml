@@ -41,3 +41,18 @@ Nếu không có ảnh, website sẽ hiển thị gradient placeholder
 Mở index.html trong trình duyệt để xem kết quả
 Deploy lên GitHub Pages theo hướng dẫn trong README.md
 Dự án đã sẵn sàng sử dụng. Bạn có muốn tôi điều chỉnh gì thêm không?
+
+
+        const linkTypes = {
+            'youtobe': { icon: '📺', label: 'Xem video trên YouTube' },
+            'youtube': { icon: '📺', label: 'Xem video trên YouTube' },
+            'facebook': { icon: '📘', label: 'Xem trên Facebook' },
+            'fb': { icon: '📘', label: 'Xem trên Facebook' },
+            'bao': { icon: '📰', label: 'Đọc bài báo' },
+            'news': { icon: '📰', label: 'Đọc bài báo' },
+            'tin': { icon: '📰', label: 'Đọc tin tức' },
+            'link': { icon: '🔗', label: 'Xem thêm' },
+            'web': { icon: '🌐', label: 'Truy cập website' },
+            'doc': { icon: '📄', label: 'Xem tài liệu' },
+            'file': { icon: '📎', label: 'Tải file' }
+        };
