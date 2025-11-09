@@ -22,12 +22,20 @@ class ArticlesLoader {
     }
     
     async loadArticles() {
-        const response = await fetch(this.jsonPath);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        try {
+            const response = await fetch(this.jsonPath);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            this.articles = data.articles || [];
+        } catch (error) {
+            console.error('Error loading articles:', error);
+            if (error instanceof SyntaxError) {
+                throw new Error('Lỗi định dạng JSON. Vui lòng kiểm tra lại file articles.json');
+            }
+            throw error;
         }
-        const data = await response.json();
-        this.articles = data.articles || [];
     }
     
     renderArticles() {
@@ -132,7 +140,10 @@ class ArticlesLoader {
                     <h2 class="article-modal-title"></h2>
                     <button class="article-modal-close" aria-label="Close modal">&times;</button>
                 </div>
-                <img class="article-modal-image" src="" alt="">
+                <div class="article-modal-images">
+                    <img class="article-modal-image" src="" alt="">
+                    <div class="article-modal-gallery"></div>
+                </div>
                 <div class="article-modal-body">
                     <div class="article-modal-text"></div>
                 </div>
@@ -165,17 +176,96 @@ class ArticlesLoader {
         
         const titleEl = modal.querySelector('.article-modal-title');
         const imageEl = modal.querySelector('.article-modal-image');
+        const galleryEl = modal.querySelector('.article-modal-gallery');
         const textEl = modal.querySelector('.article-modal-text');
         const bodyEl = modal.querySelector('.article-modal-body');
         
         titleEl.textContent = article.title || 'Không có tiêu đề';
-        imageEl.src = article.image || '';
-        imageEl.alt = article.title || '';
+        
+        // Handle main image
+        if (article.image) {
+            imageEl.src = article.image;
+            imageEl.alt = article.title || '';
+            imageEl.style.display = 'block';
+        } else {
+            imageEl.style.display = 'none';
+        }
+        
+        // Handle additional images gallery
+        galleryEl.innerHTML = '';
+        if (article.images && Array.isArray(article.images) && article.images.length > 0) {
+            article.images.forEach((imgUrl, index) => {
+                const img = document.createElement('img');
+                img.src = imgUrl;
+                img.alt = `${article.title || ''} - Hình ${index + 1}`;
+                img.className = 'article-gallery-image';
+                img.loading = 'lazy';
+                
+                // Add click handler for expanding gallery images
+                img.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    img.classList.toggle('expanded');
+                    
+                    // Close when clicking outside or on ESC key
+                    if (img.classList.contains('expanded')) {
+                        const closeHandler = (e) => {
+                            if (e.type === 'keydown' && e.key === 'Escape') {
+                                img.classList.remove('expanded');
+                                document.removeEventListener('click', closeHandler);
+                                document.removeEventListener('keydown', closeHandler);
+                            } else if (e.type === 'click' && !img.contains(e.target)) {
+                                img.classList.remove('expanded');
+                                document.removeEventListener('click', closeHandler);
+                                document.removeEventListener('keydown', closeHandler);
+                            }
+                        };
+                        setTimeout(() => {
+                            document.addEventListener('click', closeHandler);
+                            document.addEventListener('keydown', closeHandler);
+                        }, 100);
+                    }
+                });
+                
+                galleryEl.appendChild(img);
+            });
+            galleryEl.style.display = 'grid';
+        } else {
+            galleryEl.style.display = 'none';
+        }
         
         // Use content if available, otherwise use description
         const content = article.content || article.description || 'Không có nội dung';
-        // Parse and convert links to clickable format
-        textEl.innerHTML = this.parseLinks(content);
+        // Parse images first, then links (to avoid conflicts)
+        textEl.innerHTML = this.parseLinks(this.parseImages(content));
+        
+        // Add click handlers for expanded images
+        const contentImages = textEl.querySelectorAll('.article-content-image');
+        contentImages.forEach(img => {
+            img.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const wasExpanded = img.classList.contains('expanded');
+                img.classList.toggle('expanded');
+                
+                // Close when clicking outside or on ESC key
+                if (img.classList.contains('expanded')) {
+                    const closeHandler = (e) => {
+                        if (e.type === 'keydown' && e.key === 'Escape') {
+                            img.classList.remove('expanded');
+                            document.removeEventListener('click', closeHandler);
+                            document.removeEventListener('keydown', closeHandler);
+                        } else if (e.type === 'click' && !img.contains(e.target)) {
+                            img.classList.remove('expanded');
+                            document.removeEventListener('click', closeHandler);
+                            document.removeEventListener('keydown', closeHandler);
+                        }
+                    };
+                    setTimeout(() => {
+                        document.addEventListener('click', closeHandler);
+                        document.addEventListener('keydown', closeHandler);
+                    }, 100);
+                }
+            });
+        });
         
         // Add link button if article has a valid link
         let linkButton = bodyEl.querySelector('.article-modal-link');
@@ -194,15 +284,31 @@ class ArticlesLoader {
             linkButton.style.display = 'none';
         }
         
-        // Hide image if no image URL
-        if (!article.image) {
-            imageEl.style.display = 'none';
-        } else {
-            imageEl.style.display = 'block';
-        }
-        
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+    }
+    
+    parseImages(text) {
+        if (!text) return text;
+        
+        // Parse markdown-style images: ![](path/to/image.jpg)
+        text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+            return `<img src="${url}" alt="${alt || ''}" class="article-content-image" loading="lazy">`;
+        });
+        
+        // Parse custom format: [image: path/to/image.jpg]
+        text = text.replace(/\[image:\s*([^\]]+)\]/gi, (match, url) => {
+            return `<img src="${url.trim()}" alt="" class="article-content-image" loading="lazy">`;
+        });
+        
+        // Auto-detect image URLs on separate lines (for easier content editing)
+        // Format: URL on its own line (with optional whitespace)
+        const standaloneImagePattern = /(^|\n)\s*(https?:\/\/[^\s\n<>]+\.(jpg|jpeg|png|gif|webp|svg)(\?[^\s\n<>]*)?)\s*(\n|$)/gim;
+        text = text.replace(standaloneImagePattern, (match, before, url, ext, query, after) => {
+            return `${before}<img src="${url}" alt="Article image" class="article-content-image" loading="lazy">${after}`;
+        });
+        
+        return text;
     }
     
     parseLinks(text) {
@@ -260,8 +366,26 @@ class ArticlesLoader {
             return placeholder;
         });
         
-        // Now escape HTML (URLs are protected by placeholders)
+        // Protect existing HTML tags (like <img> from parseImages) before escaping
+        const htmlTagPlaceholderPrefix = '___HTML_TAG_PLACEHOLDER_';
+        const htmlTagPlaceholders = [];
+        let htmlTagIndex = 0;
+        
+        // Find and protect HTML tags (img, a, etc.)
+        textWithPlaceholders = textWithPlaceholders.replace(/<[^>]+>/g, (match) => {
+            const placeholder = htmlTagPlaceholderPrefix + htmlTagIndex;
+            htmlTagPlaceholders.push({ placeholder, html: match });
+            htmlTagIndex++;
+            return placeholder;
+        });
+        
+        // Now escape HTML (URLs and HTML tags are protected by placeholders)
         let html = this.escapeHtml(textWithPlaceholders);
+        
+        // Restore HTML tags first
+        htmlTagPlaceholders.forEach(({ placeholder, html: htmlTag }) => {
+            html = html.replace(placeholder, htmlTag);
+        });
         
         // Convert line breaks
         html = html.replace(/\n/g, '<br>');

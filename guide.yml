@@ -56,3 +56,13 @@ Dự án đã sẵn sàng sử dụng. Bạn có muốn tôi điều chỉnh gì
             'doc': { icon: '📄', label: 'Xem tài liệu' },
             'file': { icon: '📎', label: 'Tải file' }
         };
+
+Ảnh trong images sẽ hiển thị dưới dạng gallery ở trên nội dung.
+2. Thêm ảnh trực tiếp trong content (3 cách):
+Cách 1: Markdown format
+![](assets/images/post1.jpg)
+Cách 2: Custom format
+[image: assets/images/post1.jpg]
+Cách 3: URL ảnh trên dòng riêng
+https://example.com/image.jpg
+(URL ảnh phải ở trên một dòng riêng)
