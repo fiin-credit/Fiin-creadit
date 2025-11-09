@@ -182,14 +182,8 @@ class ArticlesLoader {
         
         titleEl.textContent = article.title || 'Không có tiêu đề';
         
-        // Handle main image
-        if (article.image) {
-            imageEl.src = article.image;
-            imageEl.alt = article.title || '';
-            imageEl.style.display = 'block';
-        } else {
-            imageEl.style.display = 'none';
-        }
+        // Hide main image - only show gallery and content images
+        imageEl.style.display = 'none';
         
         // Handle additional images gallery
         galleryEl.innerHTML = '';
