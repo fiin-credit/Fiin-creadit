@@ -91,14 +91,14 @@
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: var(--spacing-xs);
-    color: #FF6600;
+    color: #FFB84D;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .slide-description {
     font-size: 1.25rem;
     line-height: 1.6;
-    color: #FF8C00;
+    color: #FFD4A3;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
     margin-top: var(--spacing-xs);
 }
