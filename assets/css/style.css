@@ -328,8 +328,8 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     border-radius: var(--radius-lg);
     cursor: zoom-out;
-    background: rgba(255, 255, 255, 1);
-    padding: var(--spacing-md);
+    background: transparent;
+    padding: 0;
     object-fit: contain;
     filter: brightness(1.2) contrast(1.1);
 }
@@ -361,8 +361,8 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     border-radius: var(--radius-lg);
     cursor: zoom-out;
-    background: rgba(255, 255, 255, 1);
-    padding: var(--spacing-md);
+    background: transparent;
+    padding: 0;
     object-fit: contain;
     filter: brightness(1.2) contrast(1.1);
 }
