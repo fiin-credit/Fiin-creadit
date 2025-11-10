@@ -1,198 +1,90 @@
 /* ============================================
-   ARTICLES JAVASCRIPT
+   ARTICLE PAGE JAVASCRIPT
    ============================================ */
 
-class ArticlesLoader {
-    constructor(containerId, jsonPath) {
-        this.container = document.getElementById(containerId);
-        this.jsonPath = jsonPath;
-        this.articles = [];
+class ArticlePage {
+    constructor() {
+        this.articleId = null;
+        this.article = null;
+        this.jsonPath = 'data/articles.json';
         
         this.init();
     }
     
     async init() {
+        // Get article ID from URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        this.articleId = parseInt(urlParams.get('id'));
+        
+        if (isNaN(this.articleId)) {
+            this.showError('Không tìm thấy bài viết.');
+            return;
+        }
+        
         try {
-            await this.loadArticles();
-            this.renderArticles();
+            await this.loadArticle();
+            this.renderArticle();
         } catch (error) {
-            console.error('Error loading articles:', error);
-            this.showError();
+            console.error('Error loading article:', error);
+            this.showError('Không thể tải bài viết. Vui lòng thử lại sau.');
         }
     }
     
-    async loadArticles() {
-        try {
-            const response = await fetch(this.jsonPath);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            this.articles = data.articles || [];
-        } catch (error) {
-            console.error('Error loading articles:', error);
-            if (error instanceof SyntaxError) {
-                throw new Error('Lỗi định dạng JSON. Vui lòng kiểm tra lại file articles.json');
-            }
-            throw error;
+    async loadArticle() {
+        const response = await fetch(this.jsonPath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const articles = data.articles || [];
+        
+        if (this.articleId < 0 || this.articleId >= articles.length) {
+            throw new Error('Article ID out of range');
+        }
+        
+        this.article = articles[this.articleId];
+        
+        if (!this.article) {
+            throw new Error('Article not found');
         }
     }
     
-    renderArticles() {
-        if (!this.container) {
-            console.error('Articles container not found');
-            return;
+    renderArticle() {
+        if (!this.article) return;
+        
+        // Set page title
+        document.title = `${this.article.title || 'Bài Viết'} - Fiin Credit`;
+        
+        // Set article title
+        const titleEl = document.getElementById('articleTitle');
+        if (titleEl) {
+            titleEl.textContent = this.article.title || 'Không có tiêu đề';
         }
         
-        if (this.articles.length === 0) {
-            this.container.innerHTML = '<p style="text-align: center; color: var(--text-gray);">Chưa có bài viết nào.</p>';
-            return;
-        }
+        // Render gallery images
+        this.renderGallery();
         
-        this.container.innerHTML = this.articles.map((article, index) => {
-            return this.createArticleCard(article, index);
-        }).join('');
+        // Render content
+        this.renderContent();
         
-        // Animate articles on load
-        this.animateArticles();
+        // Render link button
+        this.renderLink();
         
-        // Add click handlers
-        this.addClickHandlers();
-        
-        // Create modal if not exists
-        this.createModal();
+        // Add click handlers for images
+        this.addImageClickHandlers();
     }
     
-    createArticleCard(article, index) {
-        const imageUrl = article.image || 'assets/images/default-article.jpg';
-        const title = article.title || 'Không có tiêu đề';
-        const description = article.description || '';
-        const isFeatured = index === 0; // First card is featured
-        const featuredClass = isFeatured ? 'featured' : '';
-        // Parse links in description to make them clickable
-        const descriptionHtml = isFeatured && description ? `<p class="article-card-description">${this.parseLinks(description)}</p>` : '';
+    renderGallery() {
+        const galleryEl = document.getElementById('articleGallery');
+        if (!galleryEl) return;
         
-        return `
-            <article class="article-card ${featuredClass}" data-index="${index}" style="animation-delay: ${index * 0.1}s">
-                <img src="${imageUrl}" alt="${title}" class="article-card-image" 
-                     onerror="this.style.background='linear-gradient(135deg, var(--primary-light), var(--secondary-color))'">
-                <div class="article-card-content">
-                    <h3 class="article-card-title">${this.escapeHtml(title)}</h3>
-                    ${descriptionHtml}
-                </div>
-            </article>
-        `;
-    }
-    
-    animateArticles() {
-        const articleCards = this.container.querySelectorAll('.article-card');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-        
-        articleCards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(card);
-        });
-    }
-    
-    showError() {
-        if (this.container) {
-            this.container.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
-                    <p>Không thể tải danh sách bài viết. Vui lòng thử lại sau.</p>
-                </div>
-            `;
-        }
-    }
-    
-    addClickHandlers() {
-        const cards = this.container.querySelectorAll('.article-card');
-        cards.forEach((card, index) => {
-            card.addEventListener('click', () => {
-                // Navigate to article page instead of showing modal
-                window.location.href = `article.html?id=${index}`;
-            });
-        });
-    }
-    
-    createModal() {
-        // Check if modal already exists
-        if (document.getElementById('articleModal')) {
-            return;
-        }
-        
-        const modal = document.createElement('div');
-        modal.id = 'articleModal';
-        modal.className = 'article-modal';
-        modal.innerHTML = `
-            <div class="article-modal-content">
-                <div class="article-modal-header">
-                    <h2 class="article-modal-title"></h2>
-                    <button class="article-modal-close" aria-label="Close modal">&times;</button>
-                </div>
-                <div class="article-modal-images">
-                    <img class="article-modal-image" src="" alt="">
-                    <div class="article-modal-gallery"></div>
-                </div>
-                <div class="article-modal-body">
-                    <div class="article-modal-text"></div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Close modal handlers
-        const closeBtn = modal.querySelector('.article-modal-close');
-        closeBtn.addEventListener('click', () => this.closeModal());
-        
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                this.closeModal();
-            }
-        });
-        
-        // Close on ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                this.closeModal();
-            }
-        });
-    }
-    
-    showModal(article) {
-        const modal = document.getElementById('articleModal');
-        if (!modal) return;
-        
-        const titleEl = modal.querySelector('.article-modal-title');
-        const imageEl = modal.querySelector('.article-modal-image');
-        const galleryEl = modal.querySelector('.article-modal-gallery');
-        const textEl = modal.querySelector('.article-modal-text');
-        const bodyEl = modal.querySelector('.article-modal-body');
-        
-        titleEl.textContent = article.title || 'Không có tiêu đề';
-        
-        // Hide main image - only show gallery and content images
-        imageEl.style.display = 'none';
-        
-        // Handle additional images gallery
         galleryEl.innerHTML = '';
-        if (article.images && Array.isArray(article.images) && article.images.length > 0) {
-            article.images.forEach((imgUrl, index) => {
+        
+        if (this.article.images && Array.isArray(this.article.images) && this.article.images.length > 0) {
+            this.article.images.forEach((imgUrl, index) => {
                 const img = document.createElement('img');
                 img.src = imgUrl;
-                img.alt = `${article.title || ''} - Hình ${index + 1}`;
+                img.alt = `${this.article.title || ''} - Hình ${index + 1}`;
                 img.className = 'article-gallery-image';
                 img.loading = 'lazy';
                 
@@ -227,18 +119,39 @@ class ArticlesLoader {
         } else {
             galleryEl.style.display = 'none';
         }
+    }
+    
+    renderContent() {
+        const contentEl = document.getElementById('articleContent');
+        if (!contentEl) return;
         
-        // Use content if available, otherwise use description
-        const content = article.content || article.description || 'Không có nội dung';
+        const content = this.article.content || this.article.description || 'Không có nội dung';
         // Parse images first, then links (to avoid conflicts)
-        textEl.innerHTML = this.parseLinks(this.parseImages(content));
+        contentEl.innerHTML = this.parseLinks(this.parseImages(content));
+    }
+    
+    renderLink() {
+        const linkContainer = document.getElementById('articleLinkContainer');
+        if (!linkContainer) return;
         
-        // Add click handlers for expanded images
-        const contentImages = textEl.querySelectorAll('.article-content-image');
+        linkContainer.innerHTML = '';
+        
+        if (this.article.link && this.article.link !== '#' && this.article.link !== '') {
+            const linkButton = document.createElement('a');
+            linkButton.className = 'article-modal-link';
+            linkButton.href = this.article.link;
+            linkButton.target = '_blank';
+            linkButton.rel = 'noopener noreferrer';
+            linkButton.textContent = '🔗 Xem thêm';
+            linkContainer.appendChild(linkButton);
+        }
+    }
+    
+    addImageClickHandlers() {
+        const contentImages = document.querySelectorAll('.article-content-image');
         contentImages.forEach(img => {
             img.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const wasExpanded = img.classList.contains('expanded');
                 img.classList.toggle('expanded');
                 
                 // Close when clicking outside or on ESC key
@@ -261,26 +174,6 @@ class ArticlesLoader {
                 }
             });
         });
-        
-        // Add link button if article has a valid link
-        let linkButton = bodyEl.querySelector('.article-modal-link');
-        if (article.link && article.link !== '#' && article.link !== '') {
-            if (!linkButton) {
-                linkButton = document.createElement('a');
-                linkButton.className = 'article-modal-link';
-                linkButton.target = '_blank';
-                linkButton.rel = 'noopener noreferrer';
-                bodyEl.appendChild(linkButton);
-            }
-            linkButton.href = article.link;
-            linkButton.textContent = '🔗 Xem thêm';
-            linkButton.style.display = 'inline-block';
-        } else if (linkButton) {
-            linkButton.style.display = 'none';
-        }
-        
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
     }
     
     parseImages(text) {
@@ -402,26 +295,33 @@ class ArticlesLoader {
         return html;
     }
     
-    closeModal() {
-        const modal = document.getElementById('articleModal');
-        if (modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-    
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
+    
+    showError(message) {
+        const titleEl = document.getElementById('articleTitle');
+        const contentEl = document.getElementById('articleContent');
+        
+        if (titleEl) {
+            titleEl.textContent = 'Lỗi';
+        }
+        
+        if (contentEl) {
+            contentEl.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
+                    <p>${message}</p>
+                    <p><a href="index.html">← Quay lại trang chủ</a></p>
+                </div>
+            `;
+        }
+    }
 }
 
-// Initialize articles loader when DOM is loaded
+// Initialize article page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    const articlesGrid = document.getElementById('articlesGrid');
-    if (articlesGrid) {
-        new ArticlesLoader('articlesGrid', 'data/articles.json');
-    }
+    new ArticlePage();
 });
 
