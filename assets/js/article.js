@@ -202,7 +202,7 @@ class ArticlePage {
     parseLinks(text) {
         if (!text) return '';
         
-        // Define link types with their icons/labels
+		// Define link types with their icons/labels
         const linkTypes = {
             'youtobe': { icon: '📺', label: 'Xem video trên YouTube' },
             'youtube': { icon: '📺', label: 'Xem video trên YouTube' },
@@ -214,7 +214,11 @@ class ArticlePage {
             'link': { icon: '🔗', label: 'Xem thêm' },
             'web': { icon: '🌐', label: 'Truy cập website' },
             'doc': { icon: '📄', label: 'Xem tài liệu' },
-            'file': { icon: '📎', label: 'Tải file' }
+			'file': { icon: '📎', label: 'Tải file' },
+			// Audio/link keywords
+			'audio': { icon: '🎧', label: 'Nghe audio' },
+			'mp3': { icon: '🎧', label: 'Nghe audio' },
+			'sound': { icon: '🎧', label: 'Nghe audio' }
         };
         
         // Use placeholder to protect URLs before escaping HTML
@@ -228,11 +232,11 @@ class ArticlePage {
         
         // Find keyword URLs (format: keyword URL or @keyword @URL)
         // Check each link type
-        Object.keys(linkTypes).forEach(keyword => {
-            const regex = new RegExp(`(@?)${keyword}\\s+(@?)(https?:\\/\\/[^\\s]+)`, 'gi');
+		Object.keys(linkTypes).forEach(keyword => {
+			const regex = new RegExp(`(@?)${keyword}\\s+(@?)([^\\s]+)`, 'gi');
             textWithPlaceholders = textWithPlaceholders.replace(regex, (match, at1, at2, url) => {
                 const placeholder = placeholderPrefix + placeholderIndex;
-                urlPlaceholders.push({ placeholder, url, type: keyword });
+				urlPlaceholders.push({ placeholder, url, type: keyword });
                 placeholderIndex++;
                 return placeholder;
             });
@@ -253,6 +257,16 @@ class ArticlePage {
             placeholderIndex++;
             return placeholder;
         });
+		
+		// Find standalone audio file paths without protocol (e.g., assets/audio/file.mp3)
+		const audioFilePattern = /(^|\s)([^\s<>"']+\.(mp3|wav|ogg|m4a))(?=\s|$)/gi;
+		textWithPlaceholders = textWithPlaceholders.replace(audioFilePattern, (match, prefix, path) => {
+			const placeholder = placeholderPrefix + placeholderIndex;
+			const normalizedPath = path.replace(/\\/g, '/');
+			urlPlaceholders.push({ placeholder, url: normalizedPath, type: 'audio-file' });
+			placeholderIndex++;
+			return `${prefix}${placeholder}`;
+		});
         
         // Protect existing HTML tags (like <img> from parseImages) before escaping
         const htmlTagPlaceholderPrefix = '___HTML_TAG_PLACEHOLDER_';
@@ -278,10 +292,15 @@ class ArticlePage {
         // Convert line breaks
         html = html.replace(/\n/g, '<br>');
         
-        // Replace placeholders with actual link HTML
+		// Replace placeholders with actual link HTML
+		const audioExtRegex = /\.(mp3|wav|ogg|m4a)(\?|#|$)/i;
+		const audioKeywords = new Set(['audio', 'mp3', 'sound', 'audio-file']);
         urlPlaceholders.forEach(({ placeholder, url, type }) => {
             let linkHtml;
-            if (linkTypes[type]) {
+			// Render inline audio player if marked as audio or URL ends with audio extension
+			if (audioKeywords.has(type) || audioExtRegex.test(url)) {
+				linkHtml = `<div class="article-audio"><audio controls preload="none" src="${url}"></audio></div>`;
+			} else if (linkTypes[type]) {
                 const linkInfo = linkTypes[type];
                 linkHtml = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="article-link">${linkInfo.icon} ${linkInfo.label}</a>`;
             } else if (type === 'at') {
