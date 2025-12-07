@@ -27,6 +27,7 @@
     justify-content: space-between;
     align-items: center;
     height: 70px;
+    position: relative;
 }
 
 .navbar-logo a {
@@ -204,6 +205,17 @@
     body {
         padding-top: 60px;
     }
+
+    /* Show social icons centered in navbar on mobile */
+    .navbar-social {
+        display: flex;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1100;
+        pointer-events: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -247,6 +259,16 @@
     
     body {
         padding-top: 56px;
+    }
+
+    .navbar-social {
+        /* keep centered on very small screens */
+        display: flex;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1100;
     }
 }
 
