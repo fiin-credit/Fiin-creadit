@@ -255,3 +255,67 @@ body {
     padding-top: 70px;
 }
 
+/* Navbar social icons (desktop) */
+.navbar-social {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.navbar-social .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    text-decoration: none;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.navbar-social .social-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.navbar-social .social-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+/* Platform colors */
+.social-link.social-facebook {
+    background: #1877F2;
+    color: #fff;
+}
+
+.social-link.social-tiktok {
+    background: linear-gradient(135deg,#25F4EE 0%,#25F4EE 20%,#FE2C55 100%);
+    color: #fff;
+}
+
+.social-link.social-youtube {
+    background: #FF0000;
+    color: #fff;
+}
+
+/* Footer social uses same classes */
+.footer-social .social-link {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+@media (max-width: 768px) {
+    .navbar-social {
+        display: none;
+    }
+}
+
